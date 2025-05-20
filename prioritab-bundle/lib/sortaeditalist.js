@@ -154,15 +154,20 @@ $(function () {
 
   // Sort todo
   var sortableOptions = {
-    revert: true,
+    revert: 150,
     connectWith: '.shown-items',
-    placeholder: 'todo-card-placeholder',
+    placeholder: 'todo-card-placeholder main-bgcolor',
     cursor: 'move',
-    tolerance: 'pointer',
-    opacity: 0.8,
+    cursorAt: { top: 15, left: 15 },
+    tolerance: 'intersect',
+    distance: 2,
+    opacity: 0.9,
     scroll: true,
-    scrollSensitivity: 30,
-    scrollSpeed: 10,
+    scrollSensitivity: 40,
+    scrollSpeed: 20,
+    helper: function(e, item) {
+      return item.clone().addClass('todo-dragging');
+    },
     start: function(e, ui) {
       ui.placeholder.height(ui.item.height());
       ui.item.addClass('todo-dragging');
@@ -244,7 +249,6 @@ $(function () {
       }
     }
     if (todoToAdd) {
-
       // Figure out which list it's in
       var listID = todoToAdd.getAttribute('data-list'),
         listToImpact,
@@ -282,7 +286,6 @@ $(function () {
       chrome.storage.sync.get(newTodoID, function (result) {
         listToImpact.append(constructToDoCard(newTodoID, result[newTodoID]));
         $('li a:visible').fadeOut();
-
         $.publish('/regenerate-list/', []);
       });
 
@@ -332,7 +335,6 @@ $(function () {
     // Fade out the list item then remove from DOM
     $this.parent().fadeOut(function () {
       $this.parent().parent().remove();
-
       $.publish('/regenerate-list/', []);
     });
   });
@@ -397,7 +399,6 @@ $(function () {
             'todo-dones': dones
           });
         }
-
       }
     });
   };

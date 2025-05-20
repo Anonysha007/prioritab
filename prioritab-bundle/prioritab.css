@@ -219,17 +219,22 @@ ul li {
   margin-bottom: .5rem;
   cursor: move;
   list-style-type: none;
-  transition: transform 0.2s ease;
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  touch-action: none;
 }
 
 .todo-dragging {
-  transform: scale(1.05);
-  opacity: 0.8;
+  transform: scale(1.02);
+  opacity: 0.95;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
 .todo-card-placeholder {
   border: 2px dashed rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1) !important;
   margin-bottom: .5rem;
+  border-radius: 3px;
 }
 
 .edit-priorities-link {
@@ -277,6 +282,8 @@ input[type="text"]:focus {
   padding: 0.5em;
   display: flex;
   align-items: center;
+  border-radius: 3px;
+  will-change: transform;
 }
 
 .todo-text {
