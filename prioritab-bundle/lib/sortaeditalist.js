@@ -95,9 +95,7 @@ $(function () {
         }
       });
       $('li a').fadeOut();
-      // ScrollMessage();
     });
-
   });
 
   // What happens when you check the checkbox...
@@ -150,35 +148,34 @@ $(function () {
 
   $itemListRight.delegate('a', 'click', function (e) {
     var $this = $(this);
-
     e.preventDefault();
     $.publish('/remove/', [$this]);
   });
 
   // Sort todo
-  $itemListLeft.sortable({
+  var sortableOptions = {
     revert: true,
-    connectWith: ['#shown-items-mid, #shown-items-right'],
-    stop: function () {
+    connectWith: '.shown-items',
+    placeholder: 'todo-card-placeholder',
+    cursor: 'move',
+    tolerance: 'pointer',
+    opacity: 0.8,
+    scroll: true,
+    scrollSensitivity: 30,
+    scrollSpeed: 10,
+    start: function(e, ui) {
+      ui.placeholder.height(ui.item.height());
+      ui.item.addClass('todo-dragging');
+    },
+    stop: function(e, ui) {
+      ui.item.removeClass('todo-dragging');
       $.publish('/regenerate-list/', []);
     }
-  });
+  };
 
-  $itemListMid.sortable({
-    revert: true,
-    connectWith: ['#shown-items-left, #shown-items-right'],
-    stop: function () {
-      $.publish('/regenerate-list/', []);
-    }
-  });
-
-  $itemListRight.sortable({
-    revert: true,
-    connectWith: ['#shown-items-left, #shown-items-mid'],
-    stop: function () {
-      $.publish('/regenerate-list/', []);
-    }
-  });
+  $itemListLeft.sortable(sortableOptions);
+  $itemListMid.sortable(sortableOptions);
+  $itemListRight.sortable(sortableOptions);
 
   // Edit and save todo
   $(".todo-text").inlineEdit({
@@ -315,7 +312,6 @@ $(function () {
           });
           break;
       }
-      // ScrollMessage();
     }
   });
 
@@ -339,8 +335,6 @@ $(function () {
 
       $.publish('/regenerate-list/', []);
     });
-
-    // ScrollMessage();
   });
 
   var reassignToList = function (inputDict) {
@@ -406,14 +400,12 @@ $(function () {
 
       }
     });
-    // ScrollMessage();
   };
 
   $.subscribe('/regenerate-list/', function () {
     var $todoItemsLeft = $('#shown-items-left li'),
-      $todoItemsMid = $('#shown-items-mid li');
-    $todoItemsRight = $('#shown-items-right li');
-
+      $todoItemsMid = $('#shown-items-mid li'),
+      $todoItemsRight = $('#shown-items-right li');
 
     // Make sure all items in the respective lists have the right 'tag'
     // (in event of cross-list movement)
@@ -456,9 +448,7 @@ $(function () {
   });
 
   $.subscribe('/clear-all/', function (listToImpactName, clearAll) {
-
-    var $todoListLi = $('#shown-items-left li'),
-      listToImpact;
+    var itemsToImpact;
 
     switch (listToImpactName) {
       case 'left':

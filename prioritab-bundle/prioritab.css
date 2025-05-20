@@ -217,14 +217,19 @@ li a {
 ul li {
   font-size: 1em;
   margin-bottom: .5rem;
-  cursor: -webkit-grab;
-  cursor: grab;
+  cursor: move;
   list-style-type: none;
+  transition: transform 0.2s ease;
 }
 
-ul li:active {
-  cursor: -webkit-grabbing;
-  cursor: grabbing;
+.todo-dragging {
+  transform: scale(1.05);
+  opacity: 0.8;
+}
+
+.todo-card-placeholder {
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  margin-bottom: .5rem;
 }
 
 .edit-priorities-link {
